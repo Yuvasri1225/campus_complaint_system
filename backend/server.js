@@ -6,11 +6,17 @@ const mongoose = require("mongoose");
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: ["http://localhost:5173", "http://localhost:5174"], // ✅ added 5174
+  credentials: true
+}));
 app.use(express.json());
 
 // MongoDB connection
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_URI, {
+  serverSelectionTimeoutMS: 10000,
+  family: 4
+})
   .then(() => console.log("MongoDB Connected ✅"))
   .catch(err => console.log(err));
 
@@ -18,8 +24,8 @@ mongoose.connect(process.env.MONGO_URI)
 const authRoutes = require("./routes/authRoutes");
 const complaintRoutes = require("./routes/complaintRoute");
 
-// ✅ USE ROUTES (IMPORTANT)
-app.use("/", authRoutes);              // /register, /login
+// Use routes
+app.use("/", authRoutes);
 app.use("/complaints", complaintRoutes);
 
 // Test route

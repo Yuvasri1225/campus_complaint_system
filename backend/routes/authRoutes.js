@@ -6,6 +6,11 @@ const bcrypt = require("bcryptjs");
 // REGISTER
 router.post("/register", async (req, res) => {
   try {
+    const existingUser = await User.findOne({ email: req.body.email });
+    if (existingUser) {
+      return res.status(400).json({ message: "Email already registered ❌" });
+    }
+
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
     const user = new User({
@@ -37,7 +42,12 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Wrong password ❌" });
     }
 
-    res.json({ message: "Login success ✅", user });
+    res.json({
+      message: "Login success ✅",
+      role: user.role,
+      email: user.email,
+      name: user.name
+    });
 
   } catch (err) {
     res.status(500).json({ error: err.message });

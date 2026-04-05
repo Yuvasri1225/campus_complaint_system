@@ -1,11 +1,13 @@
 const mongoose = require("mongoose");
 
 const complaintSchema = new mongoose.Schema({
-  name: String,
+  title: String,
+  description: String,
+  category: String,
   email: String,
-  complaint: String,
   status: {
     type: String,
+    enum: ["Pending", "In Progress", "Resolved"],
     default: "Pending"
   }
 }, { timestamps: true });

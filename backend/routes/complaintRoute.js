@@ -2,48 +2,48 @@ const express = require("express");
 const router = express.Router();
 const Complaint = require("../models/Complaint");
 
-// ✅ Create Complaint
+// Create complaint
 router.post("/", async (req, res) => {
   try {
-    const newComplaint = new Complaint(req.body);
-    await newComplaint.save();
-    res.status(201).json({ message: "Complaint Saved ✅" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    const complaint = new Complaint(req.body);
+    await complaint.save();
+    res.json({ message: "Complaint submitted ✅", complaint });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 
-// ✅ Get All Complaints
+// Get all complaints
 router.get("/", async (req, res) => {
   try {
-    const complaints = await Complaint.find();
+    const complaints = await Complaint.find().sort({ createdAt: -1 });
     res.json(complaints);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 
-// ✅ Update
+// Update complaint status
 router.put("/:id", async (req, res) => {
   try {
-    const updated = await Complaint.findByIdAndUpdate(
+    const complaint = await Complaint.findByIdAndUpdate(
       req.params.id,
       { status: req.body.status },
-      { new: true }
+      { returnDocument: "after" } // ✅ fixed
     );
-    res.json(updated);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.json(complaint);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 
-// ✅ Delete
+// Delete complaint
 router.delete("/:id", async (req, res) => {
   try {
     await Complaint.findByIdAndDelete(req.params.id);
-    res.json({ message: "Deleted Successfully 🗑️" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.json({ message: "Deleted ✅" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 
