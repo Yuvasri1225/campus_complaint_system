@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:5000"
+  baseURL: "https://campus-complaint-system-3iqb.onrender.com"
 });
 
 export const createComplaint = (data) => API.post("/complaints", data);
